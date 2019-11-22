@@ -21,6 +21,7 @@ public:
 private:
 	tcp_connection(boost::asio::io_context& io);
 	void handle_write(const boost::system::error_code&, size_t);
+	void handle_read(const boost::system::error_code & err);
 };
 
 class tcp_server

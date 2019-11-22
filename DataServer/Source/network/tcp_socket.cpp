@@ -13,6 +13,12 @@ void tcp_connection::start()
 			shared_from_this(),
 			boost::asio::placeholders::error,
 			boost::asio::placeholders::bytes_transferred));
+
+	char buff[512];
+	boost::asio::async_read(socket, boost::asio::buffer(buff),
+		boost::bind(&tcp_connection::handle_read,
+			shared_from_this(),
+			boost::asio::placeholders::error));
 }
 
 boost::asio::ip::tcp::socket & tcp_connection::get_socket()
@@ -27,7 +33,10 @@ tcp_connection::tcp_connection(boost::asio::io_context & io) :
 
 void tcp_connection::handle_write(const boost::system::error_code & err, size_t s)
 {
-	std::cout << err << std::endl;
+}
+
+void tcp_connection::handle_read(const boost::system::error_code & err)
+{
 }
 
 tcp_server::tcp_server(boost::asio::io_context & io) :
