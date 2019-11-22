@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 
 		boost::asio::io_context io;
 		boost::asio::ip::tcp::resolver resolver(io);
-		boost::asio::ip::tcp::resolver::results_type epnts = resolver.resolve(argv[1], "daytime");
+		boost::asio::ip::tcp::resolver::results_type epnts = resolver.resolve(argv[1], "8001");
 
 		boost::asio::ip::tcp::socket socket(io);
 		boost::asio::connect(socket, epnts);
