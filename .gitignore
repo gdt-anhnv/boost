@@ -45,3 +45,5 @@
 *.idb
 *.ilk
 *.lastbuildstate
+*/x64/
+*/.vs/

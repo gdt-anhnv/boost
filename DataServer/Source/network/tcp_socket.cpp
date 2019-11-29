@@ -31,6 +31,12 @@ void tcp_connection::handle_write(const boost::system::error_code & err, size_t 
 
 void tcp_connection::handle_read(const boost::system::error_code & err)
 {
+	if (err)
+	{
+		socket.close();
+		return;
+	}
+
 	std::istream stream(&buffer);
 	std::string data;
 	std::getline(stream, data);
@@ -39,12 +45,12 @@ void tcp_connection::handle_read(const boost::system::error_code & err)
 		if (0 == data.compare("data"))
 		{
 			std::cout << "data" << std::endl;
-			//write("recieved data");
+			write("recieved data");
 		}
 		if (0 == data.compare("data2"))
 		{
 			std::cout << "data2" << std::endl;
-			//write("recieved data2");
+			write("recieved data2");
 		}
 	}
 	else
