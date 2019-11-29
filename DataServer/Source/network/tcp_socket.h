@@ -11,6 +11,7 @@ class tcp_connection : public boost::enable_shared_from_this<tcp_connection>
 {
 private:
 	boost::asio::ip::tcp::socket socket;
+	boost::asio::streambuf buffer;
 
 public:
 	typedef boost::shared_ptr<tcp_connection> pointer;
@@ -22,6 +23,7 @@ private:
 	tcp_connection(boost::asio::io_context& io);
 	void handle_write(const boost::system::error_code&, size_t);
 	void handle_read(const boost::system::error_code & err);
+	void write(std::string);
 };
 
 class tcp_server

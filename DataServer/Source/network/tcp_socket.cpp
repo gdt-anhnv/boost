@@ -8,14 +8,7 @@ tcp_connection::pointer tcp_connection::create(boost::asio::io_context & io)
 
 void tcp_connection::start()
 {
-	boost::asio::async_write(socket, boost::asio::buffer("Testing"),
-		boost::bind(&tcp_connection::handle_write,
-			shared_from_this(),
-			boost::asio::placeholders::error,
-			boost::asio::placeholders::bytes_transferred));
-
-	char buff[512];
-	boost::asio::async_read(socket, boost::asio::buffer(buff),
+	boost::asio::async_read_until(socket, buffer, "\n",
 		boost::bind(&tcp_connection::handle_read,
 			shared_from_this(),
 			boost::asio::placeholders::error));
@@ -27,7 +20,8 @@ boost::asio::ip::tcp::socket & tcp_connection::get_socket()
 }
 
 tcp_connection::tcp_connection(boost::asio::io_context & io) :
-	socket(io)
+	socket(io),
+	buffer()
 {
 }
 
@@ -37,6 +31,36 @@ void tcp_connection::handle_write(const boost::system::error_code & err, size_t 
 
 void tcp_connection::handle_read(const boost::system::error_code & err)
 {
+	std::istream stream(&buffer);
+	std::string data;
+	std::getline(stream, data);
+	if (data.length() != 0)
+	{
+		if (0 == data.compare("data"))
+		{
+			std::cout << "data" << std::endl;
+			//write("recieved data");
+		}
+		if (0 == data.compare("data2"))
+		{
+			std::cout << "data2" << std::endl;
+			//write("recieved data2");
+		}
+	}
+	else
+		std::cout << "Error" << std::endl;
+	buffer.consume(buffer.size());
+	start();
+}
+
+void tcp_connection::write(std::string data)
+{
+	auto self(shared_from_this());
+	boost::asio::async_write(socket, boost::asio::buffer(data.c_str(), data.length()),
+		[this, self](boost::system::error_code err, std::size_t)
+	{
+		
+	});
 }
 
 tcp_server::tcp_server(boost::asio::io_context & io) :
