@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "tcp_socket.h"
 
+#include <chrono>
+#include <ctime>
+
 tcp_connection::pointer tcp_connection::create(boost::asio::io_context & io)
 {
 	return pointer(new tcp_connection(io));
@@ -45,12 +48,12 @@ void tcp_connection::handle_read(const boost::system::error_code & err)
 		if (0 == data.compare("data"))
 		{
 			std::cout << "data" << std::endl;
-			write("recieved data");
+			write("recieved data\n");
 		}
 		if (0 == data.compare("data2"))
 		{
 			std::cout << "data2" << std::endl;
-			write("recieved data2");
+			write("recieved data2\n");
 		}
 	}
 	else
@@ -65,7 +68,9 @@ void tcp_connection::write(std::string data)
 	boost::asio::async_write(socket, boost::asio::buffer(data.c_str(), data.length()),
 		[this, self](boost::system::error_code err, std::size_t)
 	{
-		
+		auto time = std::chrono::system_clock::to_time_t(
+			std::chrono::system_clock::now());
+		std::cout << std::ctime(&time) << std::endl;
 	});
 }
 
